@@ -1,0 +1,9 @@
+{
+  "name": "oakhaven-launchpad",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Oakhaven local launchpad — Fiori launchpad sandbox with a tile per UI5 app under src/ (not an app itself)",
+  "devDependencies": {
+    "ui5-tooling-transpile": "^3.13.1"
+  }
+}

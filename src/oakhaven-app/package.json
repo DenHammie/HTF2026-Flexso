@@ -1,0 +1,9 @@
+{
+  "name": "oakhaven.village",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Oakhaven — the raw village data, as a SAPUI5 TypeScript app",
+  "devDependencies": {
+    "ui5-tooling-transpile": "^3.13.1"
+  }
+}

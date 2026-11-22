@@ -1,0 +1,30 @@
+{
+  "_version": "2.0.0",
+  "sap.app": {
+    "id": "oakhaven.launchpad",
+    "type": "application",
+    "title": "Oakhaven Launchpad",
+    "description": "Local Fiori launchpad: one tile per UI5 app under src/",
+    "applicationVersion": {
+      "version": "0.1.0"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.136.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.m": {},
+        "sap.ushell": {}
+      }
+    }
+  }
+}

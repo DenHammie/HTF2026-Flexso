@@ -1,0 +1,14 @@
+# Never part of the image: host installs, build output, local DB, secrets.
+node_modules
+**/node_modules
+gen
+dist
+coverage
+*.sqlite
+*.sqlite-*
+.env
+# Local npm config (may hold registry tokens) — never part of the image.
+.npmrc
+# VCS metadata and local AI-assistant settings.
+.git
+.claude

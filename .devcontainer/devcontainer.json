@@ -1,0 +1,22 @@
+{
+  // VS Code: "Dev Containers: Reopen in Container" — opens this project inside the same Docker
+  // container docker-compose.yml runs, with Node, TypeScript, UI5 and CAP tooling ready to use.
+  "name": "Oakhaven — CAP + UI5 (TypeScript)",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/usr/src/app",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "SAPSE.vscode-cds",
+        "SAPOSS.vscode-ui5-language-assistant",
+        "SAPSE.sap-ux-fiori-tools-extension-pack"
+      ],
+      "settings": {
+        "typescript.tsdk": "/usr/src/node_modules/typescript/lib",
+        "terminal.integrated.defaultProfile.linux": "sh"
+      }
+    }
+  }
+}

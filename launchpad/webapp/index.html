@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oakhaven Launchpad</title>
+    <!-- Fiori launchpad sandbox: reads its tiles from /appconfig/fioriSandboxConfig.json,
+         which srv/server.ts builds from every app under src/ (one tile per crossNavigation inbound). -->
+    <script id="sap-ushell-bootstrap" src="resources/sap/ushell/bootstrap/sandbox2.js"></script>
+    <script
+        id="sap-ui-bootstrap"
+        src="resources/sap-ui-core.js"
+        data-sap-ui-libs="sap.m, sap.ushell"
+        data-sap-ui-theme="sap_horizon_dark"
+        data-sap-ui-compat-version="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-resource-roots='{"oakhaven.launchpad": "./"}'
+        data-sap-ui-on-init="module:oakhaven/launchpad/init"
+        data-sap-ui-frame-options="trusted">
+    </script>
+</head>
+<body class="sapUiBody" id="content"></body>
+</html>

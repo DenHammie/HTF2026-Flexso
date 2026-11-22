@@ -1,0 +1,17 @@
+{
+  "folders": {
+    "app": "src"
+  },
+  "requires": {
+    "db": {
+      "kind": "sqlite",
+      "credentials": { "url": "db/oakhaven.sqlite" }
+    }
+  },
+  "features": {
+    "fetch_csrf": false
+  },
+  "build": {
+    "target": "gen"
+  }
+}

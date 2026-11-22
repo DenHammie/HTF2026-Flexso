@@ -1,0 +1,41 @@
+# Oakhaven local dev environment — Docker is the only prerequisite.
+#   docker compose up --build --watch   first start (builds the image, seeds the DB, watches srv/ + db/)
+#   http://localhost:4004/launchpad/index.html   the Oakhaven launchpad (one tile per app)
+# See GETTING-STARTED.md for all commands.
+name: oakhaven
+
+services:
+  app:
+    build: .
+    image: oakhaven-dev
+    ports:
+      - "4004:4004"     # CAP server + UI5 apps
+      - "35729:35729"   # cds watch live reload
+    volumes:
+      # The whole project is live-mounted: edits under src/, srv/, db/ … reload immediately
+      # and the SQLite DB (db/oakhaven.sqlite) persists on your disk.
+      - .:/usr/src/app
+      # Hide any node_modules folder on the host (e.g. a Windows install): the container uses
+      # its own Linux install from /usr/src/node_modules.
+      - /usr/src/app/node_modules
+    # `docker compose up --watch`: Docker watches the backend files on YOUR disk and restarts the
+    # server when they change — reliable on Windows/OneDrive, where file events don't reach the
+    # container. UI5 files under src/ need no restart: refresh the browser.
+    develop:
+      watch:
+        - path: ./srv
+          action: restart
+        - path: ./db
+          action: restart
+          ignore:
+            - "*.sqlite"      # the live database changes all the time — never restart for it
+            - "*.sqlite-*"
+        - path: ./.cdsrc.json
+          action: restart
+        - path: ./package.json
+          action: rebuild     # new dependency → rebuild the image
+    init: true          # clean Ctrl+C / docker compose down
+    tty: true
+    stdin_open: true
+    # Runs as root: on native Linux hosts files the container creates (db/oakhaven.sqlite, gen/)
+    # are root-owned — fix with `sudo chown -R $USER db gen` (see GETTING-STARTED.md).

@@ -1,0 +1,17 @@
+# Secrets
+.env
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+gen/
+dist/
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+coverage/
+
+# Local AI-assistant settings
+.claude/settings.local.json

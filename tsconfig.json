@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "ES2022"
+    ],
+    "outDir": "gen",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "sourceMap": true,
+    "types": [
+      "node",
+      "@sapui5/types"
+    ]
+  },
+  "include": [
+    "srv/**/*.ts",
+    "src/**/*.ts",
+    "launchpad/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "gen",
+    "dist"
+  ]
+}
