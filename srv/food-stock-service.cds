@@ -8,7 +8,12 @@ using { oakhaven.curse as db } from '../db/schema';
 service FoodStockService @(path: 'food-stock', impl: 'srv/food-stock-service') {
 
   @readonly
-  entity StockItems     as projection on db.StockItems;
+  entity StockItems     as projection on db.StockItems {
+    *,
+    // Tobin's rules (srv/lib/status-rules.ts), filled in by addStockStatus in food-stock-service.ts.
+    // critical = below half the minimum level · low = below the minimum level · ok (Tobin Reyes)
+    virtual null as stockStatus : String(10) enum { critical; low; ok; }
+  };
 
   @readonly
   entity StockReceivals as projection on db.StockReceivals;

@@ -9,6 +9,7 @@
  * and the part of its API this file uses is described in the small interfaces below.
  */
 import { startDemoSensorFeed } from './lib/demo-freshness';
+import { flowPercent, pipeStatus, toNumber, type PipeStatus } from './lib/status-rules';
 
 // 👋 EXAMPLE — the shape of a WaterPipes row as our handler sees it. Every field is optional:
 //    the client decides which fields it asks for ($select).
@@ -16,6 +17,12 @@ interface PipeRow {
   ID?: string;
   lastMaintenance?: string | null;
   daysSinceMaintenance?: number | null;
+  // Inputs and outputs of addPipeStatus (Decimals may arrive as strings, hence `unknown`).
+  nominalFlowRate?: unknown;
+  currentFlowRate?: unknown;
+  currentPressure?: unknown;
+  flowPercent?: number | null;
+  pipeStatus?: PipeStatus | null;
 }
 
 /** The slice of a CAP service this file uses. */
@@ -81,10 +88,45 @@ async function addDaysSinceMaintenance(results: unknown): Promise<void> {
   }
 }
 
+const PIPE_STATUS_INPUTS = ['nominalFlowRate', 'currentFlowRate', 'currentPressure'] as const;
+
+/**
+ * Fills in `flowPercent` and `pipeStatus` with Maren's rules — same pattern as the example above:
+ * re-read missing inputs in ONE query, then compute.
+ */
+async function addPipeStatus(results: unknown): Promise<void> {
+  const rows = (Array.isArray(results) ? results : [results]).filter(
+    (row): row is PipeRow => row !== null && typeof row === 'object',
+  );
+
+  const missingIds = rows
+    .filter((row) => row.ID && PIPE_STATUS_INPUTS.some((input) => !(input in row)))
+    .map((row) => row.ID);
+  const storedById = new Map<string, PipeRow>();
+  if (missingIds.length > 0) {
+    const pipes = await SELECT.from('oakhaven.curse.WaterPipes')
+      .columns('ID', ...PIPE_STATUS_INPUTS)
+      .where({ ID: { in: missingIds } });
+    for (const pipe of pipes) storedById.set(pipe.ID ?? '', pipe);
+  }
+
+  for (const row of rows) {
+    const stored = storedById.get(row.ID ?? '');
+    const input = (name: (typeof PIPE_STATUS_INPUTS)[number]): number | null =>
+      toNumber(name in row ? row[name] : stored?.[name]);
+
+    const percent = flowPercent(input('currentFlowRate'), input('nominalFlowRate'));
+    row.flowPercent = percent === null ? null : Math.round(percent * 10) / 10;
+    // The status uses the unrounded percentage: 79.96 % is still below Maren's 80 %.
+    row.pipeStatus = pipeStatus(percent, input('currentPressure'));
+  }
+}
+
 export default class WaterSupplyService extends cds.ApplicationService {
   override async init(): Promise<void> {
     // 👋 EXAMPLE — register the handler: after every READ of WaterPipes, add daysSinceMaintenance.
     this.after('READ', 'WaterPipes', addDaysSinceMaintenance);
+    this.after('READ', 'WaterPipes', addPipeStatus);
 
     startDemoSensorFeed();
     return super.init();

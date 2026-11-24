@@ -13,7 +13,11 @@ service WaterSupplyService @(path: 'water-supply', impl: 'srv/water-supply-servi
     // 👋 EXAMPLE — a computed field. `virtual` = part of the API, but not a column in the database.
     //    CAP returns null for it until a handler fills it in: see addDaysSinceMaintenance in
     //    water-supply-service.ts. Shown as a column in src/oakhaven-app/webapp/view/Main.view.xml.
-    virtual null as daysSinceMaintenance : Integer
+    virtual null as daysSinceMaintenance : Integer,
+    // Maren's rules (srv/lib/status-rules.ts), filled in by addPipeStatus in water-supply-service.ts.
+    virtual null as flowPercent          : Decimal(5, 1), // currentFlowRate / nominalFlowRate × 100
+    // alarm = drop everything · visit = plan a visit this week · ok = fine (Maren Holt)
+    virtual null as pipeStatus           : String(10) enum { alarm; visit; ok; }
   };
 
   @readonly

@@ -1,5 +1,7 @@
-# Secrets
+# Secrets — never commit
 .env
+.env.*
+.npmrc
 
 # Dependencies
 node_modules/
@@ -7,11 +9,30 @@ node_modules/
 # Build artifacts
 gen/
 dist/
+coverage/
+*.tsbuildinfo
+
+# Local database (rebuilt with `npm run db:reset` from schema.cds + db/data/*.csv)
 *.sqlite
 *.sqlite-journal
 *.sqlite-shm
 *.sqlite-wal
-coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors / IDEs (personal settings; .devcontainer/ stays tracked)
+.idea/
+*.iml
+.vscode/
+*.swp
+*~
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # Local AI-assistant settings
 .claude/settings.local.json

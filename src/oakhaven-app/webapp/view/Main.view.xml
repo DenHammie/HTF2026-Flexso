@@ -4,7 +4,7 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.f"
     xmlns:core="sap.ui.core"
-    core:require="{ DateTimeOffset: 'sap/ui/model/odata/type/DateTimeOffset' }"
+    core:require="{ DateTimeOffset: 'sap/ui/model/odata/type/DateTimeOffset', formatter: 'oakhaven/village/model/formatter' }"
     displayBlock="true"
     height="100%">
     <f:DynamicPage id="page" toggleHeaderOnTitleClick="true">
@@ -50,10 +50,12 @@
                             items="{ path: '/WaterPipes', sorter: { path: 'pipeID' }, templateShareable: false }">
                             <columns>
                                 <Column id="pipeIDCol"><Text id="pipeIDHdr" text="{i18n>pipeID}" /></Column>
+                                <Column id="pipeStatusCol"><Text id="pipeStatusHdr" text="{i18n>pipeStatus}" /></Column>
                                 <Column id="pipeRouteCol" minScreenWidth="Tablet" demandPopin="true"><Text id="pipeRouteHdr" text="{i18n>pipeRoute}" /></Column>
                                 <Column id="pipeTypeCol" minScreenWidth="Desktop" demandPopin="true"><Text id="pipeTypeHdr" text="{i18n>pipeType}" /></Column>
                                 <Column id="pipeNominalCol" hAlign="End"><Text id="pipeNominalHdr" text="{i18n>pipeNominalFlow}" /></Column>
                                 <Column id="pipeFlowCol" hAlign="End"><Text id="pipeFlowHdr" text="{i18n>pipeCurrentFlow}" /></Column>
+                                <Column id="pipeFlowPercentCol" hAlign="End"><Text id="pipeFlowPercentHdr" text="{i18n>pipeFlowPercent}" /></Column>
                                 <Column id="pipePressureCol" hAlign="End"><Text id="pipePressureHdr" text="{i18n>pipePressure}" /></Column>
                                 <Column id="pipeMaintenanceCol" minScreenWidth="Tablet" demandPopin="true"><Text id="pipeMaintenanceHdr" text="{i18n>pipeLastMaintenance}" /></Column>
                                 <!-- 👋 EXAMPLE — the column header of the computed field (text in i18n.properties) -->
@@ -63,10 +65,16 @@
                                 <ColumnListItem id="pipeRow">
                                     <cells>
                                         <ObjectIdentifier id="pipeIDCell" title="{pipeID}" />
+                                        <ObjectStatus
+                                            id="pipeStatusCell"
+                                            text="{= ${pipeStatus} === 'alarm' ? ${i18n>statusAlarm} : ${pipeStatus} === 'visit' ? ${i18n>statusVisit} : ${pipeStatus} === 'ok' ? ${i18n>statusOk} : '' }"
+                                            state="{ path: 'pipeStatus', formatter: 'formatter.statusState' }"
+                                            icon="{ path: 'pipeStatus', formatter: 'formatter.statusIcon' }" />
                                         <Text id="pipeRouteCell" text="{location}" />
                                         <Text id="pipeTypeCell" text="{pipelineType}" />
                                         <ObjectNumber id="pipeNominalCell" number="{nominalFlowRate}" unit="{i18n>unitFlow}" />
                                         <ObjectNumber id="pipeFlowCell" number="{currentFlowRate}" unit="{i18n>unitFlow}" />
+                                        <ObjectNumber id="pipeFlowPercentCell" number="{flowPercent}" unit="{i18n>unitPercent}" />
                                         <ObjectNumber id="pipePressureCell" number="{currentPressure}" unit="{i18n>unitPressure}" />
                                         <Text id="pipeMaintenanceCell" text="{ path: 'lastMaintenance', type: 'DateTimeOffset', formatOptions: { style: 'medium' } }" />
                                         <!-- 👋 EXAMPLE — bind the computed field like any other: UI5 adds it to $select,
@@ -169,6 +177,7 @@
                             items="{ path: 'food>/StockItems', sorter: { path: 'name' }, templateShareable: false }">
                             <columns>
                                 <Column id="stockItemCol"><Text id="stockItemHdr" text="{i18n>stockItem}" /></Column>
+                                <Column id="stockStatusCol"><Text id="stockStatusHdr" text="{i18n>stockStatus}" /></Column>
                                 <Column id="stockQuantityCol" hAlign="End"><Text id="stockQuantityHdr" text="{i18n>stockQuantity}" /></Column>
                                 <Column id="stockMinCol" hAlign="End"><Text id="stockMinHdr" text="{i18n>stockMinLevel}" /></Column>
                                 <Column id="stockConsumptionCol" hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text id="stockConsumptionHdr" text="{i18n>stockConsumption}" /></Column>
@@ -180,6 +189,11 @@
                                             <core:Icon id="stockIcon" src="{food>icon}" size="1.25rem" class="oakItemIcon sapUiSmallMarginEnd" />
                                             <ObjectIdentifier id="stockName" title="{food>name}" text="{food>itemID}" />
                                         </HBox>
+                                        <ObjectStatus
+                                            id="stockStatusCell"
+                                            text="{= ${food>stockStatus} === 'critical' ? ${i18n>statusCritical} : ${food>stockStatus} === 'low' ? ${i18n>statusLow} : ${food>stockStatus} === 'ok' ? ${i18n>statusOk} : '' }"
+                                            state="{ path: 'food>stockStatus', formatter: 'formatter.statusState' }"
+                                            icon="{ path: 'food>stockStatus', formatter: 'formatter.statusIcon' }" />
                                         <ObjectNumber id="stockQuantityCell" number="{food>currentQuantity}" unit="{food>unit}" />
                                         <ObjectNumber id="stockMinCell" number="{food>minStockLevel}" unit="{food>unit}" />
                                         <ObjectNumber id="stockConsumptionCell" number="{food>consumptionRate}" unit="{food>unit}" />
