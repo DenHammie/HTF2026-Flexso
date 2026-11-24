@@ -25,6 +25,8 @@
   1. Liggen ze **op dezelfde lijn** → eerst de leiding **stroomopwaarts** (die treft iedereen erna).
   2. Liggen ze **op verschillende lijnen** → mensen eerst:
      **North Residential Area** (± 140 gezinnen) → **The Bakery** → **South Meadow Farms** (dieren redden het een halve dag met de troggen).
+- **SECONDARY-LOOP = helemaal achteraan, ook bij Alarm.** "It's only a backup ring, nobody depends on it."
+  **Elk ander probleem gaat vóór**, zelfs een leiding die alleen Visit is.
 
 ### Huidige data met haar regels
 | Leiding | Flow | Druk | Status | Voedt |
@@ -36,6 +38,16 @@
 
 "Stroomopwaarts" kunnen we afleiden uit de data: leiding A ligt vóór B als `A.endPoint = B.startPoint`
 (bv. PRIMARY-MAIN → NORTH-BRANCH-01 → NORTH-BRANCH-02).
+⚠️ SECONDARY-LOOP (North Mill House → Silverbrook Spring) maakt een **lus** in het netwerk: niet meenemen
+bij het zoeken naar stroomopwaarts, anders lijkt de reserveleiding vóór álles te liggen.
+
+**Werklijst vandaag** (2 herstellingen per dag → top 2 = vandaag):
+
+| # | Leiding | Status | Waarom |
+| --- | --- | --- | --- |
+| 1 | NORTH-BRANCH-02 | 🔴 Alarm | flow 31%, 22 PSI — voedt North Residential Area |
+| 2 | SOUTH-BRANCH | 🟠 Visit | flow 67%, 38 PSI — voedt South Meadow Farms |
+| 3 | SECONDARY-LOOP | 🔴 Alarm | flow 30%, 20 PSI — reserveleiding, niemand hangt ervan af → achteraan |
 
 ### Voorstel (wat we bouwen)
 - Berekende velden `flowPercent` en `pipeStatus` (Alarm / Visit / OK) — `👋 EXAMPLE`-patroon.
@@ -44,9 +56,12 @@
 - Eventueel op de dorpskaart (leidingen via `mapPath`, kleur + icoon per status).
 
 ### Nog open
-1. **Leidingen die geen plek voeden** (SECONDARY-LOOP, de hoofdleidingen): waar vallen die in de volgorde?
-   SECONDARY-LOOP is nu in alarm.
-2. **Gaat elk Alarm vóór elke Visit?** (logisch, maar niet letterlijk gezegd.)
+1. ~~SECONDARY-LOOP~~ → beantwoord: altijd achteraan.
+   **Hoofdleidingen** (PRIMARY-MAIN, NORTH-BRANCH-01) voeden zelf geen plek. Aanname: ze krijgen de prioriteit
+   van de belangrijkste plek stroomafwaarts (NORTH-BRANCH-01 → North Residential Area). Niet bevestigd;
+   speelt nu niet (beide OK).
+2. **Gaat elk Alarm vóór elke Visit?** (logisch, maar niet letterlijk gezegd — alleen voor SECONDARY-LOOP
+   zei ze het omgekeerde.)
 3. **Welke volgorde bij Visits onderling** — dezelfde regels als bij alarmen?
 4. **Sensor of leiding?** SENS-004 meet 140 L/min op BAKERY-BRANCH (leiding zegt 47, capaciteit 50). Welke waarde vertrouwt ze?
 5. Wil ze een **dagplanning** (2 herstellingen per dag) of gewoon de volgorde?
